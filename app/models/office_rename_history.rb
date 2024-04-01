@@ -1,0 +1,2 @@
+class OfficeRenameHistory < ApplicationRecord
+end

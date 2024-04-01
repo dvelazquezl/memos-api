@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 
+  header_url: MyString
+  footer_url: MyString
+  start_date: 2024-03-31 22:13:40
+  end_date: 2024-03-31 22:13:40
+  active: false
+
+two:
+  id: 
+  header_url: MyString
+  footer_url: MyString
+  start_date: 2024-03-31 22:13:40
+  end_date: 2024-03-31 22:13:40
+  active: false

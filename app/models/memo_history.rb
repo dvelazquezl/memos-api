@@ -1,0 +1,2 @@
+class MemoHistory < ApplicationRecord
+end
