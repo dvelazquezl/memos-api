@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-    belongs_to :office
+  belongs_to :office
 
-    enum role: [:manager, :admin]
+  enum role: [:manager, :admin]
 end
