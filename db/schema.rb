@@ -24,7 +24,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_01_213335) do
     t.text "subject", null: false
     t.datetime "memo_date", null: false
     t.text "body"
-    t.column "status", "enum('draft','approved')"
+    t.integer "status", default: 0, null: false, unsigned: true
     t.datetime "deadline"
     t.bigint "created_by", null: false
     t.bigint "office_id", null: false
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_01_213335) do
   end
 
   create_table "offices", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "office_name", null: false
+    t.string "name", null: false
     t.boolean "renamed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -93,7 +93,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_01_213335) do
     t.string "full_name", null: false
     t.string "email", null: false
     t.string "username", null: false
-    t.column "position", "enum('boss','secretary')", null: false
+    t.integer "role", default: 0, null: false, unsigned: true
     t.bigint "office_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -5,7 +5,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :full_name, null: false
       t.string :email, null: false
       t.string :username, null: false
-      t.column :position, "ENUM('boss', 'secretary')", null: false
+      t.column :role, 'INT(1) UNSIGNED', default: 0, null: false
       t.bigint :office_id, null: false
 
       t.timestamps

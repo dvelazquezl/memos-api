@@ -5,4 +5,6 @@ class Memo < ApplicationRecord
     has_one :memo
     has_many :attachments
     has_many :memos_history
+
+    enum status: [:draft, :approved]
 end
