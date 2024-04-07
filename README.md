@@ -7,5 +7,19 @@
 * Ruby 3.1.2
 * MariaDB
 
-# Database initialization
-Clone the repo and create `config/database.yml` file out of `config/database-example.yml`, update the values.
+# Database configuration
+Create `config/database.yml` file out of `config/database-example.yml` and update the values.
+
+# Setup JWT secret key
+You will need a secret key to be able to encrypt the user's passwords. 
+Create `config/secrets.yml` file out of `config/secrets-example.yml` and update the values for development and production. In order to generate those keys you need to run `rails secret` for each environment.
+
+# Run the project locally
+```bash
+# Setup database
+rails db:create
+rails db:migrate
+# Start server
+rails server
+```
+After the server started you can go to your browser to this url: `http://localhost:3000` or use some application to make HTTP calls.
