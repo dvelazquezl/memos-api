@@ -2,13 +2,17 @@ Rails.application.routes.draw do
   root 'status#index'
   post '/login', to: 'auth#token'
 
-  resources :offices, only: [:index, :create]
-  resources :users, only: [:index, :create] do
-    collection do
-      get :me
-      scope 'me' do
-        patch 'update-password', to: :update_password
-      end
-    end
+  namespace :offices do
+    get '', action: :index
+    post '', action: :create
+  end
+
+  namespace :users do
+    get '', action: :index
+    post '', action: :create
+    get 'me', action: :me
+    patch 'me/update-password', action: :update_password
+    patch 'update-role/:ci', action: :update_role
+    delete ':ci', action: :delete
   end
 end

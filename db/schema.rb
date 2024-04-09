@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_07_000051) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
   create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "url", null: false
     t.bigint "memo_id", null: false
@@ -98,6 +98,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_07_000051) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.boolean "active", default: true
     t.index ["id"], name: "index_users_on_id", unique: true
     t.index ["office_id"], name: "fk_rails_547b85a38b"
   end

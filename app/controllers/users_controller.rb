@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :authenticate_admin, only: [:index, :create]
+  before_action :authenticate_admin, only: [:index, :create, :update_role, :delete]
+  before_action :set_user, only: [:update_role, :delete]
 
   def index
     users = User.all
@@ -15,12 +16,16 @@ class UsersController < ApplicationController
     end
   end
 
+  def me
+    render json: @current_user, status: :ok
+  end
+
   def update_password
     user = @current_user
 
     if user&.authenticate(params[:current_password])
       if user.update(password: params[:new_password])
-        render json: { message: 'Password updated successfully' }, status: :ok
+        render status: :ok
       else
         render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
       end
@@ -29,13 +34,32 @@ class UsersController < ApplicationController
     end
   end
 
-  def me
-    render json: @current_user, status: :ok
+  def update_role
+    @user.role = params[:role]
+
+    if @user.save
+      render status: :ok
+    else
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def delete
+    @user.active = false
+    if @user.save
+      render status: :no_content
+    else
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
 
   def user_params
     params.permit(:ci_number, :full_name, :email, :username, :office_id, :role, :password)
+  end
+
+  def set_user
+    @user = User.find_by(ci_number: params[:ci])
   end
 end
