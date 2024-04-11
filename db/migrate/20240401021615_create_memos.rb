@@ -4,7 +4,7 @@ class CreateMemos < ActiveRecord::Migration[7.0]
       t.text :subject, null: false
       t.datetime :memo_date, null: false
       t.text :body
-      t.column :status, "ENUM('draft', 'approved')"
+      t.column :status, 'INT(1) UNSIGNED', default: 0, null: false
       t.datetime :deadline
       t.bigint :created_by, null: false
       t.bigint :office_id, null: false
