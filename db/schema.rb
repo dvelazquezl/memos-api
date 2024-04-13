@@ -10,21 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
   create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "url", null: false
     t.bigint "memo_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["id"], name: "index_attachments_on_id", unique: true
     t.index ["memo_id"], name: "fk_rails_ab8ea4fafe"
+    t.index ["user_id"], name: "fk_rails_5650a5e7db"
   end
 
   create_table "memos", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.text "subject", null: false
     t.datetime "memo_date", null: false
     t.text "body"
-    t.integer "status", default: 0, null: false, unsigned: true
+    t.column "status", "enum('draft','approved')"
     t.datetime "deadline"
     t.bigint "created_by", null: false
     t.bigint "office_id", null: false
@@ -51,16 +53,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
     t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "sent_by", null: false
     t.index ["id"], name: "index_memos_histories_on_id", unique: true
     t.index ["memo_id"], name: "fk_rails_9db9cba4fb"
     t.index ["office_receiver_id"], name: "fk_rails_301f733c86"
     t.index ["office_sender_id"], name: "fk_rails_3c4f8b4c5d"
     t.index ["received_by"], name: "fk_rails_35f1616c6c"
+    t.index ["sent_by"], name: "fk_rails_9170661e51"
   end
 
   create_table "offices", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "name", null: false
-    t.boolean "renamed", default: false
+    t.string "office_name", null: false
+    t.boolean "renamed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_offices_on_id", unique: true
@@ -93,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
     t.string "full_name", null: false
     t.string "email", null: false
     t.string "username", null: false
-    t.integer "role", default: 0, null: false, unsigned: true
+    t.column "position", "enum('boss','secretary')", null: false
     t.bigint "office_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -104,6 +108,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
   end
 
   add_foreign_key "attachments", "memos"
+  add_foreign_key "attachments", "users"
   add_foreign_key "memos", "memos", column: "memo_to_reply"
   add_foreign_key "memos", "offices"
   add_foreign_key "memos", "periods"
@@ -112,6 +117,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_234842) do
   add_foreign_key "memos_histories", "offices", column: "office_receiver_id"
   add_foreign_key "memos_histories", "offices", column: "office_sender_id"
   add_foreign_key "memos_histories", "users", column: "received_by"
+  add_foreign_key "memos_histories", "users", column: "sent_by"
   add_foreign_key "offices_rename_histories", "offices"
   add_foreign_key "offices_rename_histories", "periods"
   add_foreign_key "users", "offices"
