@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.text "subject", null: false
     t.datetime "memo_date", null: false
     t.text "body"
-    t.column "status", "enum('draft','approved')"
+    t.integer "status", default: 0, null: false, unsigned: true
     t.datetime "deadline"
     t.bigint "created_by", null: false
     t.bigint "office_id", null: false
@@ -53,7 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.string "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "sent_by", null: false
+    t.bigint "sent_by"
     t.index ["id"], name: "index_memos_histories_on_id", unique: true
     t.index ["memo_id"], name: "fk_rails_9db9cba4fb"
     t.index ["office_receiver_id"], name: "fk_rails_301f733c86"
@@ -63,8 +63,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
   end
 
   create_table "offices", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.string "office_name", null: false
-    t.boolean "renamed"
+    t.string "name", null: false
+    t.boolean "renamed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_offices_on_id", unique: true
@@ -97,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.string "full_name", null: false
     t.string "email", null: false
     t.string "username", null: false
-    t.column "position", "enum('boss','secretary')", null: false
+    t.integer "role", default: 0, null: false, unsigned: true
     t.bigint "office_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
