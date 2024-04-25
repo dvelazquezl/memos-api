@@ -41,7 +41,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.index ["period_id"], name: "fk_rails_d33e6f5694"
   end
 
-  create_table "memos_histories", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+  create_table "memo_histories", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.bigint "memo_id", null: false
     t.integer "memo_number", null: false
     t.bigint "office_receiver_id"
