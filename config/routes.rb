@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   namespace :memos do
     get '', action: :index
+    post '', action: :create
   end
 
   namespace :memo_histories do

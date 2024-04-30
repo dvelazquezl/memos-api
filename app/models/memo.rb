@@ -6,5 +6,7 @@ class Memo < ApplicationRecord
   has_many :memo_histories
   has_many :attachments
 
+  serialize :offices_receiver_ids, Array
+
   enum status: [:draft, :approved]
 end
