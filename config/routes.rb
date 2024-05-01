@@ -15,4 +15,13 @@ Rails.application.routes.draw do
     patch 'update-role/:ci', action: :update_role
     delete ':ci', action: :delete
   end
+
+  namespace :memos do
+    get '', action: :index
+    post '', action: :create
+  end
+
+  namespace :memo_histories do
+    get '', action: :index
+  end
 end

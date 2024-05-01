@@ -1,5 +1,7 @@
 class MemoHistory < ApplicationRecord
   belongs_to :memo
-  has_many :offices
-  has_one :user
+  belongs_to :office_sender, class_name: 'Office', foreign_key: :office_sender_id
+  belongs_to :sent_by, class_name: 'User', foreign_key: :sent_by
+  belongs_to :office_receiver, class_name: 'Office', foreign_key: :office_receiver_id
+  belongs_to :received_by, class_name: 'User', foreign_key: :received_by
 end

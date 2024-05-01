@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_30_044353) do
   create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "url", null: false
     t.bigint "memo_id", null: false
@@ -35,12 +35,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "sent_by"
-    t.index ["id"], name: "index_memo_histories_on_id", unique: true
-    t.index ["memo_id"], name: "fk_rails_df4433091c"
-    t.index ["office_receiver_id"], name: "fk_rails_812cd0d713"
-    t.index ["office_sender_id"], name: "fk_rails_beec34e6d3"
-    t.index ["received_by"], name: "fk_rails_2d7f7b6f80"
-    t.index ["sent_by"], name: "fk_rails_cd67f3f6c6"
+    t.index ["id"], name: "index_memos_histories_on_id", unique: true
+    t.index ["memo_id"], name: "fk_rails_9db9cba4fb"
+    t.index ["office_receiver_id"], name: "fk_rails_301f733c86"
+    t.index ["office_sender_id"], name: "fk_rails_3c4f8b4c5d"
+    t.index ["received_by"], name: "fk_rails_35f1616c6c"
+    t.index ["sent_by"], name: "fk_rails_9170661e51"
   end
 
   create_table "memos", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -53,6 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_020332) do
     t.bigint "office_id", null: false
     t.bigint "period_id", null: false
     t.bigint "memo_to_reply"
+    t.string "offices_receiver_ids", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by"], name: "fk_rails_a99c2dc451"
