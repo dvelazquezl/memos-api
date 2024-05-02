@@ -18,6 +18,14 @@ class MemosController < ApplicationController
     end
   end
 
+  def sent
+    limit = params[:limit] || nil
+    memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period)
+                .order(:status)
+                .limit(limit)
+    render json: memos, status: :ok
+  end
+
   private
 
   def memo_params
