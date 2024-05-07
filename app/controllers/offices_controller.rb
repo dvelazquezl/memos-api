@@ -1,5 +1,5 @@
 class OfficesController < ApplicationController
-  before_action :authenticate_admin
+  before_action :authenticate_admin, only: [:create]
 
   def index
     offices = Office.all

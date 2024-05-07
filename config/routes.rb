@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     get '', action: :index
     post '', action: :create
     get '/sent', action: :sent
+    get '/:id', action: :show
   end
 
   namespace :memo_histories do

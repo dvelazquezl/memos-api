@@ -4,6 +4,11 @@ class MemosController < ApplicationController
     render json: memos, status: :ok
   end
 
+  def show
+    memo = Memo.find(params[:id])
+    render json: memo, status: :ok
+  end
+
   def create
     memo = Memo.new(memo_params)
     memo.memo_date = Time.now
