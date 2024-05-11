@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     post '', action: :create
     get '/sent', action: :sent
     get '/:id', action: :show
+    patch '/:id', action: :update
+    post '/:id/send', action: :send_memo
+    get '/received', action: :received
   end
 
   namespace :memo_histories do

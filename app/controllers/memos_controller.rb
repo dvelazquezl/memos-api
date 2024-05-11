@@ -1,4 +1,6 @@
 class MemosController < ApplicationController
+  before_action :authenticate_manager, only: [:send_memo]
+
   def index
     memos = Memo.all
     render json: memos, status: :ok
@@ -23,12 +25,49 @@ class MemosController < ApplicationController
     end
   end
 
+  def update
+    memo = Memo.find(params[:id])
+    if memo.update(memo_params)
+      render json: memo, status: :ok
+    else
+      render json: { errors: memo.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def sent
     limit = params[:limit] || nil
     memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period)
                 .order(:status)
                 .limit(limit)
     render json: memos, status: :ok
+  end
+
+  def send_memo
+    memo = Memo.find(params[:id])
+    memo.status = :approved
+    memo_number = Office.generate_memo_number(memo.period_id, memo.office_id)
+    all_histories_saved = true
+    failed_histories = []
+    memo_params[:offices_receiver_ids].each do |office_receiver_id|
+      memo_history = MemoHistory.new(memo_id: memo.id,
+                                     memo_number:,
+                                     office_receiver_id:,
+                                     office_sender_id: memo.office_id,
+                                     sent_at: Time.now,
+                                     sent_by: @current_user)
+      unless memo_history.save
+        all_histories_saved = false
+        failed_histories << memo_history.errors.full_messages
+        break
+      end
+    end
+
+    if all_histories_saved && memo.update(memo_params)
+      render json: memo, status: :ok
+    else
+      render json: { errors: { memo_errors: memo.errors.full_messages,
+                               memo_history_errors: failed_histories.flatten } }, status: :unprocessable_entity
+    end
   end
 
   private
