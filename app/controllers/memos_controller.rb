@@ -7,8 +7,15 @@ class MemosController < ApplicationController
   end
 
   def show
-    memo = Memo.find(params[:id])
-    render json: memo, status: :ok
+    memo = Memo.where(id: params[:id], office_id: @current_user.office_id)
+               .or(Memo.where(id: MemoHistory.where(memo_id: params[:id], office_receiver_id: @current_user.office_id)
+                                          .or(MemoHistory.where(memo_id: params[:id], office_sender_id: @current_user.office_id))
+                                          .select(:memo_id))).first
+    if memo.present?
+      render json: memo, status: :ok
+    else
+      render json: { error: 'No tienes permiso para ver este memorando' }, status: :unauthorized
+    end
   end
 
   def create
@@ -56,6 +63,7 @@ class MemosController < ApplicationController
                                      sent_at: Time.now,
                                      sent_by: @current_user)
       unless memo_history.save
+
         all_histories_saved = false
         failed_histories << memo_history.errors.full_messages
         break
