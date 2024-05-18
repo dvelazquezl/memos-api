@@ -62,11 +62,12 @@ class MemosController < ApplicationController
                                      office_sender_id: memo.office_id,
                                      sent_at: Time.now,
                                      sent_by: @current_user)
-      next if memo_history.save
+      unless memo_history.save
 
-      all_histories_saved = false
-      failed_histories << memo_history.errors.full_messages
-      break
+        all_histories_saved = false
+        failed_histories << memo_history.errors.full_messages
+        break
+      end
     end
 
     if all_histories_saved && memo.update(memo_params)
