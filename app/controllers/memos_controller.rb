@@ -35,9 +35,11 @@ class MemosController < ApplicationController
   end
 
   def sent
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || 10
     memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period)
                 .order(:status)
-                .paginate(page: params[:page].presence || 1, per_page: 10)
+                .paginate(page:, per_page:)
     count = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period).count
 
     serialized_memos = memos.map.with_index do |memo, index|
