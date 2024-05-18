@@ -35,11 +35,16 @@ class MemosController < ApplicationController
   end
 
   def sent
-    limit = params[:limit] || nil
     memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period)
                 .order(:status)
-                .limit(limit)
-    render json: memos, status: :ok
+                .paginate(page: params[:page].presence || 1, per_page: 10)
+    count = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period).count
+
+    serialized_memos = memos.map.with_index do |memo, index|
+      MemoSerializer.new(memo, position: index).as_json
+    end
+
+    render json: { memos: serialized_memos, count: }, status: :ok
   end
 
   def send_memo

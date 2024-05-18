@@ -17,6 +17,7 @@ gem 'bootsnap', require: false
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'bcrypt', '~> 3.1', '>= 3.1.20'
 gem 'jwt'
+gem 'will_paginate', '~> 4.0'
 
 # CORS support
 gem 'rack-cors'
