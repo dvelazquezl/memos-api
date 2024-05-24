@@ -10,4 +10,8 @@ class MemoHistory < ApplicationRecord
             :office_sender_id,
             :sent_at,
             :sent_by, presence: true
+
+  def self.latest_mh_by_office(office_receiver_id)
+    where(office_receiver_id:).group(:memo_id).pluck('max(id)')
+  end
 end
