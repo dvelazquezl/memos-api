@@ -15,6 +15,18 @@ class OfficesController < ApplicationController
     end
   end
 
+  def rename
+    office_rename = Office.find(params[:id])
+    office_rename.renamed = true
+    office_rename_history = OfficeRenameHistory.new(office_id: office_rename.id, name: office_rename.name, period_id: Period.active_period)
+    if office_rename.update(office_params) && office_rename_history.save
+      render json: office_rename, status: :created
+    else
+      render json: { errors: { office_errors: office_errors.errors.full_messages,
+                               office_rename_history_errors: office_rename_history.errors.full_messages } }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def office_params

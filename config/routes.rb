@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :offices do
     get '', action: :index
     post '', action: :create
+    patch '/:id', action: :rename
   end
 
   namespace :users do
