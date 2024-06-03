@@ -4,7 +4,14 @@ class UsersController < ApplicationController
 
   def index
     users = User.all
-    render json: users, status: :ok
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || users.count
+    count = users.count
+    serialized_users = users.paginate(page:, per_page:).map.with_index do |user, index|
+      UserSerializer.new(user, position: index).as_json
+    end
+
+    render json: { users: serialized_users, count: }, status: :ok
   end
 
   def create
