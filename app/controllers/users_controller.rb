@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:update_role, :delete]
 
   def index
-    users = User.all
+    users = User.all.order(:full_name)
     page = params[:page].presence || 1
     per_page = params[:per_page].presence || users.count
     count = users.count
