@@ -2,8 +2,15 @@ class OfficesController < ApplicationController
   before_action :authenticate_admin, only: [:create]
 
   def index
-    offices = Office.all
-    render json: offices, status: :ok
+    offices = Office.all.order(:name)
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || offices.count
+    count = offices.count
+    serialized_offices = offices.paginate(page:, per_page:).map.with_index do |office, index|
+      OfficeSerializer.new(office, position: index).as_json
+    end
+
+    render json: { offices: serialized_offices, count: }, status: :ok
   end
 
   def create
