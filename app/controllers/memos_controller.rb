@@ -42,18 +42,36 @@ class MemosController < ApplicationController
   end
 
   def sent
-    page = params[:page].presence || 1
-    per_page = params[:per_page].presence || 10
-    memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period)
-                .order(:status)
-                .paginate(page:, per_page:)
-    count = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period).count
+    page = (params[:page].presence || 1).to_i
+    per_page = (params[:per_page].presence || 10).to_i
+    offset = (page - 1) * per_page
 
-    serialized_memos = memos.map.with_index do |memo, index|
-      MemoSerializer.new(memo, position: index).as_json
+    all_memos = Memo.where(office_id: @current_user.office_id, period_id: Period.active_period).order(memo_date: :desc)
+    draft_memos = all_memos.where(status: :draft)
+    approved_memos = all_memos.where(status: :approved)
+
+    # pagination handled manually because of the different sources of memos
+    draft_count = draft_memos.count
+    approved_count = approved_memos.count
+
+    paginated_draft_memos = draft_memos.limit(per_page).offset(offset)
+    remaining_draft_count = [draft_count - offset, 0].max
+
+    if remaining_draft_count >= per_page
+      paginated_memos = paginated_draft_memos
+    else
+      remaining_count = per_page - remaining_draft_count
+      paginated_approved_memos = approved_memos.limit(remaining_count).offset([offset - draft_count, 0].max)
+      paginated_memos = paginated_draft_memos + paginated_approved_memos
     end
 
-    render json: { memos: serialized_memos, count: }, status: :ok
+    total_count = draft_count + approved_count
+
+    serialized_memos = paginated_memos.map.with_index do |memo, index|
+      MemoSerializer.new(memo, position: offset + index).as_json
+    end
+
+    render json: { memos: serialized_memos, count: total_count }, status: :ok
   end
 
   def received
@@ -62,7 +80,7 @@ class MemosController < ApplicationController
     latest_mh_ids = MemoHistory.latest_mh_by_office(@current_user.office_id)
     all_memos = Memo.joins(:memo_histories)
                     .where(status: :approved, period_id: Period.active_period, memo_histories: { id: latest_mh_ids })
-                    .order('memo_histories.received DESC')
+                    .order('memo_histories.received ASC', memo_date: :desc)
     count = all_memos.count
 
     serialized_memos = all_memos.paginate(page:, per_page:).map.with_index do |memo, index|
