@@ -131,8 +131,11 @@ class MemosController < ApplicationController
                                        received_at: Time.now,
                                        received_by: @current_user,
                                        comment: params[:comment].presence || nil)
-    render json: { errors: new_memo_history.errors.full_messages }, status: :unprocessable_entity unless new_memo_history.save
-    head :ok
+    if new_memo_history.save
+      render json: new_memo_history, status: :ok
+    else
+      render json: { errors: new_memo_history.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
