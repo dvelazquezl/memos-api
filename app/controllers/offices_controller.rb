@@ -29,7 +29,7 @@ class OfficesController < ApplicationController
     if office_rename.update(office_params) && office_rename_history.save
       render json: office_rename, status: :created
     else
-      render json: { errors: { office_errors: office_errors.errors.full_messages,
+      render json: { errors: { office_errors: office_rename.errors.full_messages,
                                office_rename_history_errors: office_rename_history.errors.full_messages } }, status: :unprocessable_entity
     end
   end

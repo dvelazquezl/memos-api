@@ -2,6 +2,8 @@ class Office < ApplicationRecord
   has_many :offices_rename_histories
   has_many :users
 
+  validates :name, presence: true, uniqueness: { case_sensitive: false }
+
   def self.generate_memo_number(current_period_id, office_id)
     last_record = MemoHistory.joins(:memo)
                              .where(office_sender_id: office_id)
