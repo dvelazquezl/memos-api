@@ -119,6 +119,25 @@ class MemosController < ApplicationController
     end
   end
 
+  def receive_memo
+    last_memo_history = MemoHistory.where(memo_id: params[:id], office_receiver_id: @current_user.office_id).last
+    new_memo_history = MemoHistory.new(memo_id: last_memo_history.memo_id,
+                                       memo_number: last_memo_history.memo_number,
+                                       office_receiver_id: last_memo_history.office_receiver_id,
+                                       office_sender_id: last_memo_history.office_sender_id,
+                                       sent_at: last_memo_history.sent_at,
+                                       sent_by: last_memo_history.sent_by,
+                                       received: true,
+                                       received_at: Time.now,
+                                       received_by: @current_user,
+                                       comment: params[:comment].presence || nil)
+    if new_memo_history.save
+      render json: new_memo_history, status: :ok
+    else
+      render json: { errors: new_memo_history.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def memo_params
