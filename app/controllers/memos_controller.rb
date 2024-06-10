@@ -103,12 +103,11 @@ class MemosController < ApplicationController
                                      office_sender_id: memo.office_id,
                                      sent_at: Time.now,
                                      sent_by: @current_user)
-      unless memo_history.save
+      next if memo_history.save
 
-        all_histories_saved = false
-        failed_histories << memo_history.errors.full_messages
-        break
-      end
+      all_histories_saved = false
+      failed_histories << memo_history.errors.full_messages
+      break
     end
 
     if all_histories_saved && memo.update(memo_params)
@@ -116,6 +115,35 @@ class MemosController < ApplicationController
     else
       render json: { errors: { memo_errors: memo.errors.full_messages,
                                memo_history_errors: failed_histories.flatten } }, status: :unprocessable_entity
+    end
+  end
+
+  def resend
+    memo = Memo.joins(:memo_histories)
+               .where(id: params[:id])
+               .select('memos.*, memo_histories.memo_number')
+               .first
+    new_offices_receiver_id = params[:offices_receiver_ids] - memo.offices_receiver_ids
+    all_histories_saved = true
+    failed_histories = []
+    new_offices_receiver_id.each do |office_id|
+      memo_history = MemoHistory.new(memo_id: memo.id,
+                                     memo_number: memo.memo_number,
+                                     office_receiver_id: office_id,
+                                     office_sender_id: memo.office_id,
+                                     sent_at: Time.now,
+                                     sent_by: @current_user)
+      next if memo_history.save
+
+      all_histories_saved = false
+      failed_histories << memo_history.errors.full_messages
+      break
+    end
+
+    if all_histories_saved && memo.update(offices_receiver_ids: memo.offices_receiver_ids + new_offices_receiver_id)
+      render json: memo, status: :ok
+    else
+      render json: { errors: failed_histories.flatten }, status: :unprocessable_entity
     end
   end
 
