@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     get '/:id', action: :show
     patch '/:id', action: :update
     post '/:id/send', action: :send_memo
+    post '/:id/resend', action: :resend
     post '/:id/receive', action: :receive_memo
   end
 
