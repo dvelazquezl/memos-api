@@ -9,4 +9,16 @@ class Memo < ApplicationRecord
   serialize :offices_receiver_ids, Array
 
   enum status: [:draft, :approved]
+
+  searchable do
+    integer :id
+    text :subject, :body
+    integer :office_id
+    time :memo_date
+    text :memo_histories do
+      memo_histories.map { |memo_history| memo_history.memo_number } # rubocop:disable Style/SymbolProc
+    end
+    join(:office_receiver_id, target: MemoHistory, type: :integer, join: { from: :memo_id, to: :id })
+    join(:office_sender_id, target: MemoHistory, type: :integer, join: { from: :memo_id, to: :id })
+  end
 end

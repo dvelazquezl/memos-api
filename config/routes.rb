@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     post '', action: :create
     get '/sent', action: :sent
     get '/received', action: :received
+    get '/search', action: :search_memo
     get '/:id', action: :show
     patch '/:id', action: :update
     post '/:id/send', action: :send_memo

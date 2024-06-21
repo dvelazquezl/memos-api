@@ -14,4 +14,12 @@ class MemoHistory < ApplicationRecord
   def self.latest_mh_by_office(office_receiver_id)
     where(office_receiver_id:).group(:memo_id).pluck('max(id)')
   end
+
+  searchable do
+    integer :id
+    integer :memo_id
+    integer :office_receiver_id
+    integer :office_sender_id
+    text :memo_number
+  end
 end

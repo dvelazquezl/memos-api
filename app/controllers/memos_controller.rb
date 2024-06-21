@@ -166,6 +166,33 @@ class MemosController < ApplicationController
     end
   end
 
+  def search_memo
+    logger.info(params)
+    text_search = params[:text]
+    date_start = DateTime.parse("#{params[:date_start]} 00:00:00")
+    date_end = DateTime.parse("#{params[:date_end]} 23:59:59")
+    office_receiver_id = params[:office_receiver_id]
+    office_sender_id = params[:office_sender_id]
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || 10
+    office_id = params[:office_id]
+
+    memos_search = Memo.search do
+      with :office_id, office_id if office_id
+      with :office_sender_id, office_sender_id if office_sender_id
+      with :office_receiver_id, office_receiver_id if office_receiver_id
+      with(:memo_date).between(date_start..date_end) if date_start && date_end
+      fulltext text_search
+      paginate(page:, per_page:)
+    end
+
+    serialized_memos = memos_search.results.map.with_index do |memo, index|
+      MemoSerializer.new(memo, position: index).as_json
+    end
+
+    render json: { memos: serialized_memos, count: memos_search.total }, status: :ok
+  end
+
   private
 
   def memo_params
