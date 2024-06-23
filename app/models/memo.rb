@@ -14,6 +14,7 @@ class Memo < ApplicationRecord
     integer :id
     text :subject, :body
     integer :office_id
+    integer :offices_receiver_ids, multiple: true
     time :memo_date
     text :memo_histories do
       memo_histories.map { |memo_history| memo_history.memo_number } # rubocop:disable Style/SymbolProc
