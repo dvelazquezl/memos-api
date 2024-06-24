@@ -167,7 +167,6 @@ class MemosController < ApplicationController
   end
 
   def search_memos
-    logger.info(params)
     text_search = params[:text]
     date_start = DateTime.parse("#{params[:date_start]} 00:00:00")
     date_end = DateTime.parse("#{params[:date_end]} 23:59:59")
