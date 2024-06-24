@@ -19,6 +19,8 @@ Create `config/secrets.yml` file out of `config/secrets-example.yml` and update 
 # Setup database
 rails db:create
 rails db:migrate
+# Index database to solr server (in case there is already data there)
+bundle exec rake sunspot:reindex
 # Start server
 rails server
 ```
