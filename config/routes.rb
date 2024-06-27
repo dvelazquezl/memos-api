@@ -32,4 +32,9 @@ Rails.application.routes.draw do
   namespace :memo_histories do
     get '', action: :index
   end
+
+  namespace :periods do
+    get '', action: :index
+    post '', action: :create
+  end
 end
