@@ -28,5 +28,8 @@ module MemosBackend
 
     # Load lib files
     config.autoload_paths << Rails.root.join('lib')
+
+    # dates configurations
+    config.active_record.default_timezone = :local
   end
 end
