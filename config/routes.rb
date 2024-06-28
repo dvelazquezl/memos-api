@@ -37,5 +37,6 @@ Rails.application.routes.draw do
   namespace :periods do
     get '', action: :index
     post '', action: :create
+    patch ':id', action: :update
   end
 end

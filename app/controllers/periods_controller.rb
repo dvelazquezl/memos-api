@@ -15,9 +15,28 @@ class PeriodsController < ApplicationController
 
   def create
     period = Period.new(period_params)
-    puts "params #{period_params.inspect}"
-    if period.save
-      render json: period, status: :created
+
+    Period.transaction do
+      if period.active
+        old_active_period = Period.find(Period.active_period)
+        if old_active_period && !old_active_period.update(active: false)
+          render json: { errors: old_active_period.errors.full_messages },
+                 status: :unprocessable_entity and return
+        end
+      end
+
+      if period.save
+        render json: period, status: :created
+      else
+        render json: { errors: period.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+  end
+
+  def update
+    period = Period.find(params[:id])
+    if period.update(period_params)
+      render json: period, status: :ok
     else
       render json: { errors: period.errors.full_messages }, status: :unprocessable_entity
     end
