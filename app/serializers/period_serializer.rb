@@ -1,5 +1,6 @@
 class PeriodSerializer < ActiveModel::Serializer
   attributes :id,
+             :active,
              :start_date,
              :end_date,
              :header_url,
