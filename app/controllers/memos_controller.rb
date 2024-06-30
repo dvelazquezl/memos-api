@@ -168,8 +168,8 @@ class MemosController < ApplicationController
 
   def search_memos
     text_search = params[:text]
-    date_start = DateTime.parse("#{params[:date_start]} 00:00:00")
-    date_end = DateTime.parse("#{params[:date_end]} 23:59:59")
+    date_start = params[:date_start]
+    date_end = params[:date_end]
     office_id = params[:office_id]
     office_sender_id = params[:office_sender_id]
     office_receiver_id = params[:office_receiver_id]
@@ -177,11 +177,12 @@ class MemosController < ApplicationController
     per_page = params[:per_page].presence || 10
 
     memos_search = Memo.search do
-      with :office_id, office_id if office_receiver_id && office_id
+      with :office_id, office_id if office_receiver_id && office_id || !office_receiver_id && office_id
       with :office_sender_id, office_sender_id if office_receiver_id && office_sender_id
-      with :office_receiver_id, office_receiver_id if office_receiver_id && office_sender_id || office_receiver_id && !office_sender_id
+      with :office_receiver_id, office_receiver_id if office_receiver_id && office_sender_id || office_receiver_id && !office_sender_id && !office_id
       with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
       with(:memo_date).between(date_start..date_end) if date_start && date_end
+      order_by :memo_date, :asc
       fulltext text_search
       paginate(page:, per_page:)
     end
