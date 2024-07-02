@@ -4,7 +4,8 @@ class Memo < ApplicationRecord
   belongs_to :period
   has_one :memo
   has_many :memo_histories
-  has_many :attachments
+  has_many :attachments, dependent: :destroy
+  accepts_nested_attributes_for :attachments
 
   serialize :offices_receiver_ids, Array
 

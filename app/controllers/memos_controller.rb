@@ -25,6 +25,9 @@ class MemosController < ApplicationController
     memo.created_by = @current_user
     memo.office_id = @current_user.office_id
     memo.period_id = Period.active_period
+    memo.attachments&.each do |attachment|
+      attachment.user_id = @current_user.id
+    end
     if memo.save
       render json: memo, status: :created
     else
@@ -197,6 +200,6 @@ class MemosController < ApplicationController
   private
 
   def memo_params
-    params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [])
+    params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [], attachments_attributes: [:url])
   end
 end
