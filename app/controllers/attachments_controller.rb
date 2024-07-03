@@ -1,28 +1,30 @@
 class AttachmentsController < ApplicationController
   def bulk
-    Attachment.transaction do
-      attachment_data = attachment_params[:urls].map do |url|
-        {
-          url:, memo_id: attachment_params[:memo_id], user_id: attachment_params[:user_id]
-        }
-      end
-      attachment_data.each do |attachment|
-        att = Attachment.new(attachment)
-        raise ActiveRecord::RecordInvalid, att unless att.valid?
-      end
+    memo_id = attachment_params[:memo_id]
+    user_id = attachment_params[:user_id]
+    files = attachment_params[:files]
 
-      Attachment.upsert_all(attachment_data)
+    attachments = files.map do |file|
+      Attachment.new(
+        url: file[:url], 
+        memo_id:, 
+        file_name: file[:file_name], 
+        user_id:
+        )
     end
-    render status: :created
-  rescue ActiveRecord::RecordInvalid => e
-    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
-  rescue StandardError => e
-    render json: { errors: e.message }, status: :internal_server_error
+
+    Attachment.transaction do
+      if attachments.all?(&:save)
+        render json: attachments, status: :created
+      else
+        render json: attachments.map(&:errors), status: :unprocessable_entity
+      end
+    end
   end
 
   private
 
   def attachment_params
-    params.permit(:memo_id, :user_id, urls: [])
+    params.permit(:memo_id, :user_id, files: [:url, :file_name])
   end
 end

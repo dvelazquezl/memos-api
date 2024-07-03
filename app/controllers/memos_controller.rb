@@ -200,6 +200,6 @@ class MemosController < ApplicationController
   private
 
   def memo_params
-    params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [], attachments_attributes: [:url])
+    params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [], attachments_attributes: [:url, :file_name])
   end
 end
