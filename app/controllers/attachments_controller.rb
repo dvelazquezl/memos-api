@@ -13,7 +13,7 @@ class AttachmentsController < ApplicationController
 
       Attachment.upsert_all(attachment_data)
     end
-    render status: :ok
+    render status: :created
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   rescue StandardError => e
