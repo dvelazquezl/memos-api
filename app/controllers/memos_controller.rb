@@ -37,7 +37,9 @@ class MemosController < ApplicationController
 
   def update
     memo = Memo.find(params[:id])
-    if memo.update(memo_params)
+    updated_params = add_user_id_to_attachments(memo_params)
+
+    if memo.update(updated_params)
       render json: memo, status: :ok
     else
       render json: { errors: memo.errors.full_messages }, status: :unprocessable_entity
@@ -201,5 +203,13 @@ class MemosController < ApplicationController
 
   def memo_params
     params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [], attachments_attributes: [:url, :file_name])
+  end
+
+  def add_user_id_to_attachments(params)
+    params[:attachments_attributes]&.each do |attachment|
+      attachment[:user_id] = @current_user.id
+    end
+
+    params
   end
 end
