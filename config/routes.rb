@@ -39,4 +39,9 @@ Rails.application.routes.draw do
     post '', action: :create
     patch ':id', action: :update
   end
+
+  namespace :attachments do
+    post '/bulk', action: :bulk
+    delete '/:id', action: :delete
+  end
 end

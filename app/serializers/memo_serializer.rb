@@ -3,6 +3,7 @@ class MemoSerializer < ActiveModel::Serializer
   belongs_to :period, serializer: PeriodSerializer
   belongs_to :created_by, serializer: UserSerializer
   belongs_to :office, serializer: OfficeSerializer
+  has_many :attachments
   has_many :memo_histories, serializer: MemoHistorySerializer
 
   def offices_receiver
