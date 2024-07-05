@@ -1,16 +1,15 @@
 class AttachmentsController < ApplicationController
   def bulk
     memo_id = attachment_params[:memo_id]
-    user_id = attachment_params[:user_id]
     files = attachment_params[:files]
 
     attachments = files.map do |file|
       Attachment.new(
-        url: file[:url], 
-        memo_id:, 
-        file_name: file[:file_name], 
-        user_id:
-        )
+        url: file[:url],
+        memo_id:,
+        file_name: file[:file_name],
+        user_id: @current_user.id
+      )
     end
 
     Attachment.transaction do
@@ -22,9 +21,19 @@ class AttachmentsController < ApplicationController
     end
   end
 
+  def delete
+    attachment = Attachment.find(params[:id])
+
+    if attachment.destroy
+      render status: :no_content
+    else
+      render json: { errors: attachment.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def attachment_params
-    params.permit(:memo_id, :user_id, files: [:url, :file_name])
+    params.permit(:memo_id, files: [:url, :file_name])
   end
 end

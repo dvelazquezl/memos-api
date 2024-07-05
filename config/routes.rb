@@ -42,5 +42,6 @@ Rails.application.routes.draw do
 
   namespace :attachments do
     post '/bulk', action: :bulk
+    delete '/:id', action: :delete
   end
 end
