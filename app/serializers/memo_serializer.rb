@@ -6,6 +6,12 @@ class MemoSerializer < ActiveModel::Serializer
   has_many :attachments
   has_many :memo_histories, serializer: MemoHistorySerializer
 
+  def memo_to_reply
+    return unless object.memo_to_reply
+
+    MemoReplySerializer.new(Memo.find(object.memo_to_reply))
+  end
+
   def offices_receiver
     offices_receiver_ids = object.offices_receiver_ids
     offices_receiver_ids.map { |id| OfficeSerializer.new(Office.find(id)) }
