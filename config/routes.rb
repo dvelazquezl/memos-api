@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     post '/:id/send', action: :send_memo
     post '/:id/resend', action: :resend
     post '/:id/receive', action: :receive_memo
+    post '/import', action: :import_memo
   end
 
   namespace :memo_histories do

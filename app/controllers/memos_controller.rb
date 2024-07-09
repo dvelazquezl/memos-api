@@ -199,10 +199,50 @@ class MemosController < ApplicationController
     render json: { memos: serialized_memos, count: memos_search.total }, status: :ok
   end
 
+  def import_memo
+    Memo.transaction do
+      memo = Memo.new(subject: import_memo_params[:subject],
+                      full_memo_number: import_memo_params[:memo_number],
+                      memo_date: import_memo_params[:memo_date],
+                      status: :approved,
+                      created_by: @current_user,
+                      office_id: import_memo_params[:office_sender],
+                      offices_receiver_ids: [import_memo_params[:office_receiver]],
+                      period_id: Period.active_period)
+
+      import_memo_params[:attachments_attributes]&.each do |attachment|
+        attachment[:user_id] = @current_user.id
+        memo.attachments.build(attachment)
+      end
+
+      # Save memo here to ensure it has an ID before building memo_history
+      memo.save!
+
+      memo.memo_histories.build(memo_number: import_memo_params[:memo_number].split('/').first.to_i,
+                                office_receiver_id: import_memo_params[:office_receiver],
+                                received: true,
+                                received_at: import_memo_params[:memo_date],
+                                received_by: @current_user,
+                                office_sender_id: import_memo_params[:office_sender],
+                                sent_at: import_memo_params[:memo_date],
+                                sent_by: @current_user)
+
+      memo.save!
+
+      render json: memo, status: :created
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { errors: e.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def memo_params
     params.permit(:subject, :body, :deadline, :memo_to_reply, offices_receiver_ids: [], attachments_attributes: [:url, :file_name])
+  end
+
+  def import_memo_params
+    params.permit(:subject, :memo_date, :memo_number, :office_receiver, :office_sender, attachments_attributes: [:url, :file_name])
   end
 
   def add_user_id_to_attachments(params)
