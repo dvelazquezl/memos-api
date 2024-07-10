@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_03_024500) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_07_234601) do
   create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "url", null: false
     t.bigint "memo_id", null: false
@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_03_024500) do
     t.bigint "period_id", null: false
     t.bigint "memo_to_reply"
     t.string "offices_receiver_ids", default: "", null: false
+    t.string "full_memo_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by"], name: "fk_rails_a99c2dc451"
