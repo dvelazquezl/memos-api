@@ -171,23 +171,45 @@ class MemosController < ApplicationController
     end
   end
 
-  def search_memos
+  def search_sent
     text_search = params[:text]
     date_start = params[:date_start]
     date_end = params[:date_end]
     office_id = params[:office_id]
+    office_receiver_id = params[:office_receiver_id]
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || 10
+
+    memos_search = Memo.search do
+      with :office_id, office_id if office_id
+      with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
+      with(:memo_date).between(date_start..date_end) if date_start && date_end
+      order_by :memo_date, :desc
+      fulltext text_search
+      paginate(page:, per_page:)
+    end
+
+    serialized_memos = memos_search.results.map.with_index do |memo, index|
+      MemoSerializer.new(memo, position: index).as_json
+    end
+
+    render json: { memos: serialized_memos, count: memos_search.total }, status: :ok
+  end
+
+  def search_received
+    text_search = params[:text]
+    date_start = params[:date_start]
+    date_end = params[:date_end]
     office_sender_id = params[:office_sender_id]
     office_receiver_id = params[:office_receiver_id]
     page = params[:page].presence || 1
     per_page = params[:per_page].presence || 10
 
     memos_search = Memo.search do
-      with :office_id, office_id if office_receiver_id && office_id || !office_receiver_id && office_id
-      with :office_sender_id, office_sender_id if office_receiver_id && office_sender_id
-      with :office_receiver_id, office_receiver_id if office_receiver_id && office_sender_id || office_receiver_id && !office_sender_id && !office_id
-      with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
+      with :office_sender_id, office_sender_id if office_sender_id
+      with :office_receiver_id, office_receiver_id if office_receiver_id
       with(:memo_date).between(date_start..date_end) if date_start && date_end
-      order_by :memo_date, :asc
+      order_by :memo_date, :desc
       fulltext text_search
       paginate(page:, per_page:)
     end
