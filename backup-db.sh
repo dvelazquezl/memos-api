@@ -14,7 +14,7 @@ UPLOAD_URL="https://tfg-nextcloud.ddns.net/remote.php/dav/files/${NEXTCLOUD_USER
 # Create backup
 mariadb-dump -u $DB_USER -p$DB_PASSWORD $DB_NAME > $BACKUP_FILE
 
-# remove first line of the backup to avoid compatibility issues
+# remove first line of the backup to avoid compatibility issues: https://mariadb.org/mariadb-dump-file-compatibility-change/
 sed '1d' $BACKUP_FILE > $BACKUP_FILE.tmp
 mv $BACKUP_FILE.tmp $BACKUP_FILE
 
