@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :set_cache_headers, only: [:index, :create, :update_password, :update_role, :delete]
 
   def index
-    users = User.all.order(:full_name)
+    users = User.where(active: true).order(:full_name)
     page = params[:page].presence || 1
     per_page = params[:per_page].presence || users.count
     count = users.count
@@ -53,11 +53,15 @@ class UsersController < ApplicationController
   end
 
   def delete
-    @user.active = false
-    if @user.save
-      render status: :no_content
+    if @user.nil?
+      render json: { error: 'Usuario no encontrado' }, status: :not_found
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      @user.active = false
+      if @user.save
+        render status: :no_content
+      else
+        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      end
     end
   end
 
