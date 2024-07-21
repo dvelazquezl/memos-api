@@ -55,6 +55,8 @@ class UsersController < ApplicationController
   def delete
     if @user.nil?
       render json: { error: 'Usuario no encontrado' }, status: :not_found
+    elsif @user.id == @current_user.id
+      render json: { error: 'No puedes eliminar tu propia cuenta' }, status: :forbidden
     else
       @user.active = false
       if @user.save
