@@ -1,5 +1,6 @@
 class OfficesController < ApplicationController
   before_action :authenticate_admin, only: [:create]
+  before_action :set_cache_headers, only: [:create, :rename]
 
   def index
     offices = Office.all.order(:name)
@@ -38,5 +39,9 @@ class OfficesController < ApplicationController
 
   def office_params
     params.require(:office).permit(:name)
+  end
+
+  def set_cache_headers
+    response.headers['Cache-Control'] = 'no-store'
   end
 end

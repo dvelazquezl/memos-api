@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_admin, only: [:index, :create, :update_role, :delete]
   before_action :set_user, only: [:update_role, :delete]
+  before_action :set_cache_headers, only: [:index, :create, :update_password, :update_role, :delete]
 
   def index
     users = User.all.order(:full_name)
@@ -68,5 +69,9 @@ class UsersController < ApplicationController
 
   def set_user
     @user = User.find_by(ci_number: params[:ci])
+  end
+
+  def set_cache_headers
+    response.headers['Cache-Control'] = 'no-store'
   end
 end
