@@ -12,6 +12,4 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, on: :create
 
   enum role: [:employee, :manager, :admin]
-
-  default_scope { where(active: true) }
 end
