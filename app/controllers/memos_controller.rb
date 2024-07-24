@@ -101,7 +101,8 @@ class MemosController < ApplicationController
     memo_number = Office.generate_memo_number(memo.period_id, memo.office_id)
     all_histories_saved = true
     failed_histories = []
-    memo_params[:offices_receiver_ids].each do |office_receiver_id|
+    updated_params = add_user_id_to_attachments(memo_params)
+    updated_params[:offices_receiver_ids].each do |office_receiver_id|
       memo_history = MemoHistory.new(memo_id: memo.id,
                                      memo_number:,
                                      office_receiver_id:,
@@ -115,7 +116,7 @@ class MemosController < ApplicationController
       break
     end
 
-    if all_histories_saved && memo.update(memo_params)
+    if all_histories_saved && memo.update(updated_params)
       render json: memo, status: :ok
     else
       render json: { errors: { memo_errors: memo.errors.full_messages,
