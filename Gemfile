@@ -24,12 +24,6 @@ gem 'rack-cors'
 
 gem 'sunspot_rails'
 
-# deployment
-gem 'capistrano', '~> 3.11'
-gem 'capistrano-rails', '~> 1.4'
-gem 'capistrano-passenger', '~> 0.2.0'
-gem 'capistrano-rbenv', '~> 2.1', '>= 2.1.4'
-
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem 'spring'
@@ -39,4 +33,11 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'progress_bar'
   gem 'sunspot_solr'
+
+  # deployment
+  gem 'capistrano', '~> 3.16'
+  gem 'capistrano-rvm', '~> 0.1.2'
+  gem 'capistrano-rails', '~> 1.6'
+  gem 'capistrano-bundler', '~> 2.0'
+  gem 'capistrano3-puma', '~> 5.0'
 end
