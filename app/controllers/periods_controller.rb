@@ -1,5 +1,6 @@
 class PeriodsController < ApplicationController
   before_action :authenticate_admin
+  before_action :set_cache_headers, only: [:create, :update]
 
   def index
     periods = Period.all.order(active: :desc)
@@ -50,5 +51,9 @@ class PeriodsController < ApplicationController
                                    :footer_width, :footer_height,
                                    :start_date, :end_date,
                                    :active)
+  end
+
+  def set_cache_headers
+    response.headers['Cache-Control'] = 'no-store'
   end
 end

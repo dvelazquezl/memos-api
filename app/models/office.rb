@@ -1,5 +1,5 @@
 class Office < ApplicationRecord
-  has_many :offices_rename_histories
+  has_many :office_rename_histories
   has_many :users
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }

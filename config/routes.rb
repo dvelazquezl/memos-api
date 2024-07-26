@@ -22,13 +22,14 @@ Rails.application.routes.draw do
     post '', action: :create
     get '/sent', action: :sent
     get '/received', action: :received
-    get '/search', action: :search_memos
     get '/:id', action: :show
     patch '/:id', action: :update
     post '/:id/send', action: :send_memo
     post '/:id/resend', action: :resend
     post '/:id/receive', action: :receive_memo
     post '/import', action: :import_memo
+    post '/search_sent', action: :search_sent
+    post '/search_received', action: :search_received
   end
 
   namespace :memo_histories do

@@ -101,7 +101,8 @@ class MemosController < ApplicationController
     memo_number = Office.generate_memo_number(memo.period_id, memo.office_id)
     all_histories_saved = true
     failed_histories = []
-    memo_params[:offices_receiver_ids].each do |office_receiver_id|
+    updated_params = add_user_id_to_attachments(memo_params)
+    updated_params[:offices_receiver_ids].each do |office_receiver_id|
       memo_history = MemoHistory.new(memo_id: memo.id,
                                      memo_number:,
                                      office_receiver_id:,
@@ -115,7 +116,7 @@ class MemosController < ApplicationController
       break
     end
 
-    if all_histories_saved && memo.update(memo_params)
+    if all_histories_saved && memo.update(updated_params)
       render json: memo, status: :ok
     else
       render json: { errors: { memo_errors: memo.errors.full_messages,
@@ -171,23 +172,45 @@ class MemosController < ApplicationController
     end
   end
 
-  def search_memos
+  def search_sent
     text_search = params[:text]
     date_start = params[:date_start]
     date_end = params[:date_end]
     office_id = params[:office_id]
+    office_receiver_id = params[:office_receiver_id]
+    page = params[:page].presence || 1
+    per_page = params[:per_page].presence || 10
+
+    memos_search = Memo.search do
+      with :office_id, office_id if office_id
+      with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
+      with(:memo_date).between(date_start..date_end) if date_start && date_end
+      order_by :memo_date, :desc
+      fulltext text_search
+      paginate(page:, per_page:)
+    end
+
+    serialized_memos = memos_search.results.map.with_index do |memo, index|
+      MemoSerializer.new(memo, position: index).as_json
+    end
+
+    render json: { memos: serialized_memos, count: memos_search.total }, status: :ok
+  end
+
+  def search_received
+    text_search = params[:text]
+    date_start = params[:date_start]
+    date_end = params[:date_end]
     office_sender_id = params[:office_sender_id]
     office_receiver_id = params[:office_receiver_id]
     page = params[:page].presence || 1
     per_page = params[:per_page].presence || 10
 
     memos_search = Memo.search do
-      with :office_id, office_id if office_receiver_id && office_id || !office_receiver_id && office_id
-      with :office_sender_id, office_sender_id if office_receiver_id && office_sender_id
-      with :office_receiver_id, office_receiver_id if office_receiver_id && office_sender_id || office_receiver_id && !office_sender_id && !office_id
-      with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
+      with :office_sender_id, office_sender_id if office_sender_id
+      with :office_receiver_id, office_receiver_id if office_receiver_id
       with(:memo_date).between(date_start..date_end) if date_start && date_end
-      order_by :memo_date, :asc
+      order_by :memo_date, :desc
       fulltext text_search
       paginate(page:, per_page:)
     end
