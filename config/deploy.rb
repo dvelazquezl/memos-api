@@ -1,4 +1,4 @@
-lock '~> 3.19.1'
+lock '~> 3.6'
 
 set :application, 'memos-backend'
 set :repo_url, 'git@bitbucket.org:tfg-workspace/memos-backend.git'
@@ -15,3 +15,13 @@ set :rvm_custom_path, '/usr/share/rvm'
 
 set :pty, true
 set :keep_releases, 5
+
+namespace :deploy do
+  before 'bundle:install', :create_gemfile_lock do
+    task :create_gemfile_lock do
+      on roles(:all) do
+        execute :touch, "#{release_path}/Gemfile.lock"
+      end
+    end
+  end
+end
