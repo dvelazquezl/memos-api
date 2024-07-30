@@ -35,9 +35,9 @@ group :development do
   gem 'sunspot_solr'
 
   # deployment
-  gem 'capistrano', '~> 3.16'
-  gem 'capistrano-rvm', '~> 0.1.2'
-  gem 'capistrano-rails', '~> 1.6'
+  gem 'capistrano', '~> 3.6', require: false
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails', '~> 1.6', require: false
   gem 'capistrano-bundler', '~> 2.0'
-  gem 'capistrano3-puma', '~> 5.0'
+  gem 'capistrano3-puma'
 end
