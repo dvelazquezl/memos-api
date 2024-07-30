@@ -11,6 +11,7 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bund
 
 set :rvm_type, :user
 set :rvm_ruby_version, '3.1.2'
+set :rvm_custom_path, '/usr/share/rvm'
 
 set :pty, true
 set :keep_releases, 5
