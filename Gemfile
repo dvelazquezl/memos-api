@@ -33,11 +33,4 @@ group :development do
   gem 'rubocop-rails', require: false
   gem 'progress_bar'
   gem 'sunspot_solr'
-
-  # deployment
-  gem 'capistrano', '~> 3.6', require: false
-  gem 'capistrano-rvm'
-  gem 'capistrano-rails', '~> 1.6', require: false
-  gem 'capistrano-bundler', '~> 2.0'
-  gem 'capistrano3-puma'
 end
