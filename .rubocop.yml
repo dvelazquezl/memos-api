@@ -1,0 +1,45 @@
+AllCops:
+  NewCops: disable
+  Exclude:
+    - db/*.rb
+  Include:
+    - app/*
+Layout/LineLength:
+  Enabled: false
+  Max: 12000000
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/BlockNesting:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Style/RedundantSelf:
+  Enabled: false
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: 'brackets'
+Style/Documentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  EnforcedStyle: 'compact'
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/FormatStringToken:
+  EnforcedStyle: 'template'
+  MaxUnannotatedPlaceholdersAllowed: 0
+Style/RegexpLiteral:
+  Enabled: false
+Bundler/OrderedGems:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false

@@ -1,45 +1,96 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# README
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+# Description
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+# Requirements
+* Rails 7.0.5
+* Ruby 3.1.2
+* MariaDB >= 11.3.2
 
----
+# Database configuration
+Create `config/database.yml` file out of `config/database-example.yml` and update the values for your user and password for the environment you are going to work.
+```bash
+cp config/database-example.yml config/database.yml
 
-## Edit a file
+# set your username and password for your database
+username: USER
+password: PASSWORD
+```
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+# Setup JWT secret key
+You will need a secret key to be able to encrypt the user's passwords. 
+Create `config/secrets.yml` file out of `config/secrets-example.yml` and generate the corresponding key for each environment  (local, production). In order to generate those keys you need to run `rails secret` for each environment and then copy the value to the `secrets.yml` file you already created.
+```bash
+cp config/secrets-example.yml config/secrets.yml
+```
+```bash
+rails secret
+### copy the value and paste it into the secrets.yml file
+development or production:
+  jwt_secret_key: your_key_from_rails_server
+```
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+# Run the project locally
+```bash
+# Install dependencies
+bundle install
 
----
+# Setup database
+rails db:create
+rails db:migrate
+rails db:seed
 
-## Create a file
+# Index database to solr server (in case there is already data there).
+# Before running this you should have a running instance of Solr in your machine.
+bundle exec rake sunspot:reindex # also works with rails sunspot:reindex
 
-Next, you’ll add a new file to this repository.
+# Start server
+rails server
+```
+After the server started you can go to your browser to this url: `http://localhost:3000` or use some application to make HTTP calls.
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+# Deploy the project to production
+> These instructions are meant to be seated in an Ubuntu Server (Version >= 22.04) alongside Nginx, a high-performance web server and reverse proxy, and Passenger, a web and application server designed to manage and serve Ruby, Python, and Node.js applications efficiently.<br>You can find how to install all of those 2 technologies here:<br>[Install Nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-22-04) (Setup the server blocks according to your domain)<br>[Install Passenger](https://www.phusionpassenger.com/docs/tutorials/deploy_to_production/installations/oss/ownserver/ruby/nginx/) (Skip installing nginx again).
+### Install dependencies
+```bash
+bundle install
+```
+### Setup the database 
+> Same instructions as above
+```bash
+cp config/database-example.yml config/database.yml
+# set your username and password for your production database
+username: USER
+password: PASSWORD
+```
+After setting your credentials run:
+```bash
+rails db:create -e production
+rails db:migrate -e production
+rails db:seed -e production
+```
+Then you need to create an admin user, this will be done through the console.
+Enter the console by running `rails console -e production` and run the following (you can change the fields if you want):
+```bash
+usr = User.new(ci_number: 1234567, full_name: 'Admin', email: 'a valid email', username: 'admin', role: :admin, office_id: 1, password: 'password', password_confirmation: 'password');
+usr.save!
+quit
+```
+### Configure passenger
+Asumming you already created a server file for your domain in `/etc/nginx/sites-available/your-domain`. Open that file and replace its content with this:
+```bash
+server {
+    listen 80;
+    server_name your-domain;
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+    root /var/www/your-domain/public;
 
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+    passenger_enabled on;
+    passenger_app_env production;
+    passenger_ruby /usr/share/rvm/gems/ruby-3.1.2/wrappers/ruby; # this could be different depending on where it is installed your ruby
+}
+```
+And lastly restart nginx service
+```bash
+sudo systemctl restart nginx.service
+```
