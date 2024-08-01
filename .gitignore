@@ -28,13 +28,10 @@
 .byebug_history
 
 # Ignore keys for decrypting credentials and more.
-/config/master.key
 /config/secrets.yml
-/config/credentials/development.key
-/config/credentials/production.key
+/config/database.yml
 
 # Other files
 Gemfile.lock
-/config/database.yml
 /node_modules
 storage/
