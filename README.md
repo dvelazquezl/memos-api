@@ -1,6 +1,7 @@
 # Memos API
 REST API built with Rails.
 ## Requirements
+* Rvm 1.29.12
 * Rails 7.0.5
 * Ruby 3.1.2
 * MariaDB >= 11.3.2
@@ -26,6 +27,7 @@ Create `config/secrets.yml` file out of `config/secrets-example.yml` and generat
 cp config/secrets-example.yml config/secrets.yml
 ```
 ```bash
+rvm use
 rails secret
 
 # secrets.yml
@@ -84,7 +86,7 @@ RAILS_ENV=production rails sunspot:reindex
 ```
 ### 3. Repeat step 4 and create an admin user
 ### 4. Configure passenger
-Asumming you already created a server file for your domain in `/etc/nginx/sites-available/your-domain`. Open that file and replace its content with this:
+Asumming you already created a server file for your domain in `/etc/nginx/sites-available/your-memos-api-domain`. Open that file and replace its content with this:
 ```bash
 server {
     listen 80;
@@ -101,7 +103,7 @@ server {
 ```bash
 sudo systemctl restart nginx.service
 ```
-After this you should be able to go to http://your-domain and get a status message like this:
+After this you should be able to go to http://your-memos-api-domain and get a status message like this:
 ```json
 {"status":"API is up and running","commit":"comit-hash"}
 ```
