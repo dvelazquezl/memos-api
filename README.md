@@ -80,7 +80,7 @@ rails db:seed -e production
 
 # Index database to solr server
 # Before running this you should have a running instance of Solr in your machine.
-bundle exec rake sunspot:reindex # also works with rails sunspot:reindex
+RAILS_ENV=production rails sunspot:reindex
 ```
 ### 3. Repeat step 4 and create an admin user
 ### 4. Configure passenger
