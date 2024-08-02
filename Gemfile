@@ -23,6 +23,7 @@ gem 'will_paginate', '~> 4.0'
 gem 'rack-cors'
 
 gem 'sunspot_rails'
+gem 'progress_bar'
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
@@ -31,6 +32,5 @@ group :development do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
-  gem 'progress_bar'
   gem 'sunspot_solr'
 end

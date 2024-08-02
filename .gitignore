@@ -27,12 +27,11 @@
 !/tmp/storage/.keep
 .byebug_history
 
-# Ignore master key for decrypting credentials and more.
-/config/master.key
+# Ignore keys for decrypting credentials and more.
 /config/secrets.yml
+/config/database.yml
 
 # Other files
 Gemfile.lock
-/config/database.yml
 /node_modules
 storage/

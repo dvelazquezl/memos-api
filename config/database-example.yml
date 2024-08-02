@@ -2,10 +2,18 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: USER
-  password: PASSWORD
-  socket: /tmp/mysql.sock
+  socket: /run/mysqld/mysqld.sock # unix
+  # socket: /tmp/mysql.sock # macOs
 
 development:
   <<: *default
   database: memos_dev
+  username: USER
+  password: PASSWORD
+
+production:
+  <<: *default
+  database: memos_prod
+  username: USER
+  password: PASSWORD
+ 
