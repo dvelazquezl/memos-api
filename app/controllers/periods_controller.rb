@@ -19,7 +19,7 @@ class PeriodsController < ApplicationController
 
     Period.transaction do
       if period.active
-        old_active_period = Period.find(Period.active_period)
+        old_active_period = Period.find(Period.active_period) unless Period.active_period.nil?
         if old_active_period && !old_active_period.update(active: false)
           render json: { errors: old_active_period.errors.full_messages },
                  status: :unprocessable_entity and return
