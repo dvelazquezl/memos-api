@@ -98,6 +98,7 @@ class MemosController < ApplicationController
   def send_memo
     memo = Memo.find(params[:id])
     memo.status = :approved
+    memo.memo_date = Time.now
     memo_number = Office.generate_memo_number(memo.period_id, memo.office_id)
     all_histories_saved = true
     failed_histories = []
