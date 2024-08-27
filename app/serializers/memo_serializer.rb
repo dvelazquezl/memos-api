@@ -1,5 +1,5 @@
 class MemoSerializer < ActiveModel::Serializer
-  attributes :id, :subject, :memo_date, :body, :status, :deadline, :memo_to_reply, :offices_receiver, :full_memo_number
+  attributes :id, :subject, :memo_date, :body, :status, :deadline, :memo_to_reply, :offices_receiver, :full_memo_number, :created_at
   belongs_to :period, serializer: PeriodSerializer
   belongs_to :created_by, serializer: UserSerializer
   belongs_to :office, serializer: OfficeSerializer
