@@ -55,7 +55,7 @@ bundle exec rake sunspot:reindex # also works with rails sunspot:reindex
 ### 4. Create admin user
 Enter the production console by running `rails console -e production` and run the following (you can change the fields if you want):
 ```bash
-usr = User.new(ci_number: 1234567, full_name: 'Admin', email: 'a valid email', username: 'admin', role: :admin, office_id: 1, password: 'password', password_confirmation: 'password');
+usr = User.new(ci_number: 1234567, full_name: 'Admin', email: 'a valid email', username: 'admin', role: :admin, office_id: 11, password: 'password', password_confirmation: 'password');
 usr.save!
 quit
 ```

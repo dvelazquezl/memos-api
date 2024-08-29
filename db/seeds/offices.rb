@@ -27,7 +27,7 @@ Office.create!([
                  { name: 'Secretaria de Gestión y Reducción de Riesgos', renamed: 0 },
                  { name: 'Secretaría de Asuntos Indígenas', renamed: 0 },
                  { name: 'Secretaría de Turismo', renamed: 0 },
-                 { name: 'Coordinación del Programa Ñemity .', renamed: 0 },
+                 { name: 'Coordinación del Programa Ñemity', renamed: 0 },
                  { name: 'Coordinación de Comunicación y Prensa', renamed: 0 },
                  { name: 'Departamento de Relaciones Públicas y Protocolo', renamed: 0 },
                  { name: 'Asesor de la Secretaría de Producción Agropecuaria', renamed: 0 },
