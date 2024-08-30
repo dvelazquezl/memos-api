@@ -186,6 +186,7 @@ class MemosController < ApplicationController
       with :office_id, office_id if office_id
       with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
       with(:memo_date).between(date_start..date_end) if date_start && date_end
+      order_by :status, :desc
       order_by :memo_date, :desc
       fulltext text_search
       paginate(page:, per_page:)
