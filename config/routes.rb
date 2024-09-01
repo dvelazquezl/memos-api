@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     post '/import', action: :import_memo
     post '/search_sent', action: :search_sent
     post '/search_received', action: :search_received
+    delete '/:id', action: :delete
   end
 
   namespace :memo_histories do
