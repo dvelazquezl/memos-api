@@ -186,6 +186,7 @@ class MemosController < ApplicationController
       with :office_id, office_id if office_id
       with :offices_receiver_ids, office_receiver_id if office_receiver_id && office_id
       with(:memo_date).between(date_start..date_end) if date_start && date_end
+      order_by :status, :desc
       order_by :memo_date, :desc
       fulltext text_search
       paginate(page:, per_page:)
@@ -256,6 +257,17 @@ class MemosController < ApplicationController
       render json: memo, status: :created
     rescue ActiveRecord::RecordInvalid => e
       render json: { errors: e.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def delete
+    memo = Memo.find(params[:id])
+
+    if memo.status == 'draft'
+      memo.destroy
+      render json: { message: 'Memorando eliminado exitosamente' }, status: :ok
+    else
+      render json: { error: 'No se puede eliminar el memorando porque ya ha sido enviado' }, status: :unprocessable_entity
     end
   end
 
