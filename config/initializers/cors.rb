@@ -8,7 +8,8 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'http://localhost:3001',
-            'http://tfg-main.ddns.net'
+            'http://tfg-main.ddns.net',
+            'https://tfg-memos.netlify.app'
 
     resource '*',
              headers: :any,
