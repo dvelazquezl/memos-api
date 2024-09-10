@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     get '', action: :index
     post '', action: :create
     patch '/:id', action: :rename
+    delete '/:id', action: :delete
   end
 
   namespace :users do

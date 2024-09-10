@@ -3,7 +3,11 @@ class OfficesController < ApplicationController
   before_action :set_cache_headers, only: [:create, :rename]
 
   def index
-    offices = Office.all.order(:name)
+    offices = if params[:include_disabled].presence && params[:include_disabled] == 'true'
+                Office.all.order(:name)
+              else
+                Office.where(active: true).order(:name)
+              end
     page = params[:page].presence || 1
     per_page = params[:per_page].presence || offices.count
     count = offices.count
@@ -33,6 +37,18 @@ class OfficesController < ApplicationController
       render json: { errors: { office_errors: office_rename.errors.full_messages,
                                office_rename_history_errors: office_rename_history.errors.full_messages } }, status: :unprocessable_entity
     end
+  end
+
+  def delete
+    office = Office.find(params[:id])
+    office.active = false
+    if office.save
+      head :no_content
+    else
+      render json: { errors: office.errors.full_messages }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   private
