@@ -262,13 +262,14 @@ class MemosController < ApplicationController
 
   def delete
     memo = Memo.find(params[:id])
-
     if memo.status == 'draft'
       memo.destroy
-      render json: { message: 'Memorando eliminado exitosamente' }, status: :ok
+      head :no_content
     else
       render json: { error: 'No se puede eliminar el memorando porque ya ha sido enviado' }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   private
