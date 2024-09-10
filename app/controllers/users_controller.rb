@@ -28,30 +28,6 @@ class UsersController < ApplicationController
     render json: @current_user, status: :ok
   end
 
-  def update_password
-    user = @current_user
-
-    if user&.authenticate(params[:current_password])
-      if user.update(password: params[:new_password])
-        render status: :ok
-      else
-        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-      end
-    else
-      render json: { error: 'Current password is incorrect' }, status: :unauthorized
-    end
-  end
-
-  def update_role
-    @user.role = params[:role]
-
-    if @user.save
-      render status: :ok
-    else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
   def delete
     if @user.nil?
       render json: { error: 'Usuario no encontrado' }, status: :not_found
