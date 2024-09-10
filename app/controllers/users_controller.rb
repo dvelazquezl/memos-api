@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :authenticate_admin, only: [:index, :create, :update_role, :delete]
-  before_action :set_user, only: [:update_role, :delete]
-  before_action :set_cache_headers, only: [:index, :create, :update_password, :update_role, :delete]
+  before_action :authenticate_admin, only: [:index, :create, :update, :delete]
+  before_action :set_user, only: [:delete]
+  before_action :set_cache_headers, only: [:index, :create, :delete]
 
   def index
     users = User.where(active: true).order(:full_name)
@@ -45,14 +45,10 @@ class UsersController < ApplicationController
 
   def update
     user = User.find(params[:id])
-    if @current_user.role == 'admin'
-      if user.update(user_params)
-        render json: user, status: :ok
-      else
-        render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-      end
+    if user.update(user_params)
+      render json: user, status: :ok
     else
-      render json: { error: 'No tienes permiso para editar usuarios' }, status: :forbidden
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
