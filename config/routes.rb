@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     patch 'me/update-password', action: :update_password
     patch 'update-role/:ci', action: :update_role
     delete ':ci', action: :delete
+    patch '/:id', action: :update
   end
 
   namespace :memos do
