@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     get '', action: :index
     post '', action: :create
     get 'me', action: :me
-    delete ':ci', action: :delete
+    delete '/:id', action: :delete
     patch '/:id', action: :update
   end
 

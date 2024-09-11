@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   end
 
   def set_user
-    @user = User.find_by(ci_number: params[:ci])
+    @user = User.find(params[:id])
   end
 
   def set_cache_headers
