@@ -28,6 +28,20 @@ class MemosController < ApplicationController
     memo.attachments&.each do |attachment|
       attachment.user_id = @current_user.id
     end
+
+    unless Office.find(@current_user.office_id).active
+      render json: { error: 'No puedes crear un memorando desde una oficina desactivada.' }, status: :unprocessable_entity
+      return
+    end
+
+    memo.offices_receiver_ids.each do |office_receiver_id|
+      office = Office.find(office_receiver_id)
+      unless office.active
+        render json: { error: "No puedes enviar un memorando a #{office.name} porque es una oficina desactivada." }, status: :unprocessable_entity
+        return # rubocop:disable Lint/NonLocalExitFromIterator
+      end
+    end
+
     if memo.save
       render json: memo, status: :created
     else
@@ -131,6 +145,14 @@ class MemosController < ApplicationController
                .select('memos.*, memo_histories.memo_number')
                .first
     new_offices_receiver_id = params[:offices_receiver_ids] - memo.offices_receiver_ids
+    new_offices_receiver_id.each do |office_id|
+      office = Office.find(office_id)
+      unless office.active
+        render json: { error: "No puedes reenviar un memorando a #{office.name} porque es una oficina desactivada." }, status: :unprocessable_entity
+        return # rubocop:disable Lint/NonLocalExitFromIterator
+      end
+    end
+
     all_histories_saved = true
     failed_histories = []
     new_offices_receiver_id.each do |office_id|
@@ -262,13 +284,14 @@ class MemosController < ApplicationController
 
   def delete
     memo = Memo.find(params[:id])
-
     if memo.status == 'draft'
       memo.destroy
-      render json: { message: 'Memorando eliminado exitosamente' }, status: :ok
+      head :no_content
     else
       render json: { error: 'No se puede eliminar el memorando porque ya ha sido enviado' }, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound
+    head :not_found
   end
 
   private

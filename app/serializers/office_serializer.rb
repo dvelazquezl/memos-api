@@ -1,3 +1,3 @@
 class OfficeSerializer < ActiveModel::Serializer
-  attributes :id, :name, :renamed
+  attributes :id, :name, :renamed, :active
 end
